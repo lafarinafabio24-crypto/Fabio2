@@ -1,15 +1,15 @@
 
+'use client';
+
 import React from 'react';
 import { ABOUT_TEXT } from '../../lib/data';
 
 const Hero: React.FC = () => {
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-brand-light">
-      {/* Background Textures */}
       <div className="absolute inset-0 bg-grid bg-grid-size opacity-40 pointer-events-none"></div>
       <div className="absolute inset-0 bg-dots bg-dots-size pointer-events-none opacity-50"></div>
       
-      {/* Background Accents */}
       <div className="absolute top-1/4 -left-20 w-[40rem] h-[40rem] bg-brand-accent/5 rounded-full blur-[140px] pointer-events-none"></div>
       <div className="absolute bottom-1/4 -right-20 w-[50rem] h-[50rem] bg-brand-basket/5 rounded-full blur-[160px] pointer-events-none"></div>
       
@@ -34,10 +34,6 @@ const Hero: React.FC = () => {
         </div>
       </div>
 
-      {/* Decorative Lines */}
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-brand-dark/10 to-transparent"></div>
-      
-      {/* Scroll indicator */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 opacity-30">
         <div className="w-[1px] h-16 bg-gradient-to-b from-brand-accent to-transparent"></div>
         <span className="text-[9px] tracking-[0.3em] uppercase font-bold text-brand-dark/60">Scorri</span>

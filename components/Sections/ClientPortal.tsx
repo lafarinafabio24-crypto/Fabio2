@@ -1,4 +1,6 @@
 
+'use client';
+
 import React, { useState, useRef, useEffect } from 'react';
 
 type ViewState = 'login' | 'register' | 'dashboard';
@@ -13,7 +15,7 @@ interface Client {
 interface VaultFile {
   name: string;
   type: string;
-  data: string; // Base64
+  data: string;
 }
 
 interface VaultMessage {
@@ -56,28 +58,35 @@ const ClientPortal: React.FC = () => {
   useEffect(() => {
     const saved = localStorage.getItem('active_client_session');
     if (saved) {
-      const client = JSON.parse(saved);
-      setCurrentClient(client);
-      loadMyMessages(client.email);
-      setView('dashboard');
+      try {
+        const client = JSON.parse(saved);
+        setCurrentClient(client);
+        loadMyMessages(client.email);
+        setView('dashboard');
+      } catch (e) {
+        localStorage.removeItem('active_client_session');
+      }
     }
   }, []);
 
   const loadMyMessages = (email: string) => {
-    const allMessages: any[] = JSON.parse(localStorage.getItem('vault_messages') || '[]');
-    // Normalize and filter: messages from client OR messages to client
-    const normalized = allMessages.map(m => ({
-      ...m,
-      attachments: m.attachments || (m.fileData ? [{ name: m.fileName, type: m.fileType, data: m.fileData }] : [])
-    })).filter(m => 
-      m.sender.toLowerCase() === email.toLowerCase() || 
-      (m.recipient && m.recipient.toLowerCase() === email.toLowerCase())
-    );
-    
-    // Sort by date (latest first)
-    normalized.sort((a, b) => b.id - a.id);
-    
-    setMyMessages(normalized);
+    try {
+      const allRaw = localStorage.getItem('vault_messages');
+      const allMessages: any[] = allRaw ? JSON.parse(allRaw) : [];
+      
+      const normalized = allMessages.map(m => ({
+        ...m,
+        attachments: m.attachments || (m.fileData ? [{ name: m.fileName, type: m.fileType, data: m.fileData }] : [])
+      })).filter(m => 
+        m.sender.toLowerCase() === email.toLowerCase() || 
+        (m.recipient && m.recipient.toLowerCase() === email.toLowerCase())
+      );
+      
+      normalized.sort((a, b) => b.id - a.id);
+      setMyMessages(normalized);
+    } catch (e) {
+      console.error("Error loading messages", e);
+    }
   };
 
   const fileToBase64 = (file: File): Promise<string> => {
@@ -101,7 +110,8 @@ const ClientPortal: React.FC = () => {
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    const users: Client[] = JSON.parse(localStorage.getItem('registered_clients') || '[]');
+    const rawClients = localStorage.getItem('registered_clients');
+    const users: Client[] = rawClients ? JSON.parse(rawClients) : [];
     const exists = users.find(u => u.email.toLowerCase() === regEmail.toLowerCase());
     if (exists) {
       setError('Questa email è già registrata.');
@@ -118,7 +128,8 @@ const ClientPortal: React.FC = () => {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    const users: Client[] = JSON.parse(localStorage.getItem('registered_clients') || '[]');
+    const rawClients = localStorage.getItem('registered_clients');
+    const users: Client[] = rawClients ? JSON.parse(rawClients) : [];
     const user = users.find(u => u.email.toLowerCase() === loginEmail.toLowerCase());
     if (user && user.password === loginPassword) {
       localStorage.setItem('active_client_session', JSON.stringify(user));
@@ -173,7 +184,8 @@ const ClientPortal: React.FC = () => {
         date: new Date().toLocaleString('it-IT'),
       };
       
-      const messages = JSON.parse(localStorage.getItem('vault_messages') || '[]');
+      const rawMsg = localStorage.getItem('vault_messages');
+      const messages = rawMsg ? JSON.parse(rawMsg) : [];
       localStorage.setItem('vault_messages', JSON.stringify([newMessage, ...messages]));
       
       alert("Richiesta inviata con successo!");
@@ -181,7 +193,7 @@ const ClientPortal: React.FC = () => {
       setFiles([]);
       loadMyMessages(currentClient.email);
     } catch (err) {
-      alert("Errore nel caricamento degli allegati.");
+      alert("Errore allegati.");
     } finally {
       setIsSending(false);
     }
@@ -282,7 +294,7 @@ const ClientPortal: React.FC = () => {
                           <div key={msg.id} className={`p-6 border ${msg.isReply ? 'bg-brand-dark text-white border-brand-dark' : 'bg-brand-light/30 border-brand-dark/5'} transition-all`}>
                             <div className="flex justify-between items-start mb-4">
                               <div>
-                                <span className={`text-[10px] font-black uppercase ${msg.isReply ? 'text-brand-accent' : 'text-brand-accent'}`}>{msg.date}</span>
+                                <span className={`text-[10px] font-black uppercase text-brand-accent`}>{msg.date}</span>
                                 <h4 className="text-sm font-black uppercase tracking-tighter mt-1">{msg.senderName}</h4>
                               </div>
                               <span className={`text-[8px] font-bold px-2 py-0.5 uppercase ${msg.isReply ? 'bg-white text-brand-dark' : 'bg-brand-dark text-white'}`}>
@@ -303,12 +315,6 @@ const ClientPortal: React.FC = () => {
                                     {att.name}
                                   </button>
                                 ))}
-                              </div>
-                            )}
-                            {msg.isReply && (
-                              <div className="mt-4 pt-4 border-t border-white/10 flex items-center gap-2">
-                                <div className="w-1.5 h-1.5 rounded-full bg-brand-accent animate-pulse"></div>
-                                <span className="text-[8px] font-bold uppercase tracking-widest text-white/40">Messaggio Verificato dal Vault</span>
                               </div>
                             )}
                           </div>
