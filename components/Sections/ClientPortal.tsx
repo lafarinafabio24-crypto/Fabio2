@@ -1,7 +1,9 @@
+'use client';
 
 import React, { useState, useEffect } from 'react';
 
 const ClientPortal: React.FC = () => {
+  const [mounted, setMounted] = useState(false);
   const [view, setView] = useState<'login' | 'register' | 'dashboard'>('login');
   const [currentClient, setCurrentClient] = useState<any>(null);
   const [messages, setMessages] = useState<any[]>([]);
@@ -12,23 +14,34 @@ const ClientPortal: React.FC = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    setMounted(true);
     const saved = localStorage.getItem('active_client_session');
     if (saved) {
-      const client = JSON.parse(saved);
-      setCurrentClient(client);
-      setView('dashboard');
-      loadMessages(client.email);
+      try {
+        const client = JSON.parse(saved);
+        setCurrentClient(client);
+        setView('dashboard');
+      } catch (e) {
+        localStorage.removeItem('active_client_session');
+      }
     }
   }, []);
 
-  const loadMessages = (clientEmail: string) => {
-    const all = JSON.parse(localStorage.getItem('vault_messages') || '[]');
-    const filtered = all.filter((m: any) => 
-      m.sender.toLowerCase() === clientEmail.toLowerCase() || 
-      (m.recipient && m.recipient.toLowerCase() === clientEmail.toLowerCase())
-    ).sort((a: any, b: any) => b.id - a.id);
-    setMessages(filtered);
-  };
+  useEffect(() => {
+    if (currentClient && mounted) {
+      const loadMessages = () => {
+        const all = JSON.parse(localStorage.getItem('vault_messages') || '[]');
+        const filtered = all.filter((m: any) => 
+          m.sender.toLowerCase() === currentClient.email.toLowerCase() || 
+          (m.recipient && m.recipient.toLowerCase() === currentClient.email.toLowerCase())
+        ).sort((a: any, b: any) => b.id - a.id);
+        setMessages(filtered);
+      };
+      loadMessages();
+      const interval = setInterval(loadMessages, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [currentClient, mounted]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +51,6 @@ const ClientPortal: React.FC = () => {
       localStorage.setItem('active_client_session', JSON.stringify(user));
       setCurrentClient(user);
       setView('dashboard');
-      loadMessages(user.email);
     } else {
       setError('Credenziali non valide.');
     }
@@ -56,7 +68,6 @@ const ClientPortal: React.FC = () => {
     localStorage.setItem('active_client_session', JSON.stringify(newUser));
     setCurrentClient(newUser);
     setView('dashboard');
-    loadMessages(email);
   };
 
   const sendMessage = (e: React.FormEvent) => {
@@ -68,15 +79,15 @@ const ClientPortal: React.FC = () => {
       senderName: currentClient.email.split('@')[0],
       content: newMessage,
       service: 'Messaggio Diretto',
-      attachments: [],
       date: new Date().toLocaleString('it-IT')
     };
     const all = JSON.parse(localStorage.getItem('vault_messages') || '[]');
     localStorage.setItem('vault_messages', JSON.stringify([msg, ...all]));
     setNewMessage('');
-    loadMessages(currentClient.email);
     alert("Inviato!");
   };
+
+  if (!mounted) return null;
 
   return (
     <section id="client-portal" className="py-24 bg-brand-light border-y border-brand-dark/5">
@@ -84,12 +95,12 @@ const ClientPortal: React.FC = () => {
         <h2 className="text-4xl font-black uppercase text-center mb-12">Area Clienti</h2>
         
         <div className="bg-white p-8 border border-brand-dark/5 shadow-2xl">
-          {view === 'dashboard' ? (
+          {view === 'dashboard' && currentClient ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               <div>
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="font-black uppercase text-xs">Nuovo Messaggio</h3>
-                  <button onClick={() => { localStorage.removeItem('active_client_session'); setView('login'); }} className="text-[10px] font-bold underline opacity-40">Esci</button>
+                  <button onClick={() => { localStorage.removeItem('active_client_session'); setCurrentClient(null); setView('login'); }} className="text-[10px] font-bold underline opacity-40">Esci</button>
                 </div>
                 <form onSubmit={sendMessage} className="space-y-4">
                   <textarea value={newMessage} onChange={e => setNewMessage(e.target.value)} required rows={5} className="w-full p-4 bg-brand-light/20 border border-brand-dark/5 outline-none text-sm" placeholder="Scrivi a Fabio..."></textarea>

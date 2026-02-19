@@ -1,13 +1,6 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
-
-interface VaultFile {
-  name: string;
-  type: string;
-  data: string;
-}
 
 interface VaultMessage {
   id: number;
@@ -16,7 +9,6 @@ interface VaultMessage {
   recipient?: string;
   content: string;
   service: string;
-  attachments: VaultFile[];
   date: string;
   isReply?: boolean;
 }
@@ -24,7 +16,6 @@ interface VaultMessage {
 const PrivateArea: React.FC = () => {
   const [mounted, setMounted] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [activeTab, setActiveTab] = useState<'messages' | 'clients'>('messages');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [messages, setMessages] = useState<VaultMessage[]>([]);
@@ -32,7 +23,6 @@ const PrivateArea: React.FC = () => {
   
   const [replyTo, setReplyTo] = useState<VaultMessage | null>(null);
   const [responseContent, setResponseContent] = useState('');
-  const [isSendingResponse, setIsSendingResponse] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -40,22 +30,16 @@ const PrivateArea: React.FC = () => {
 
   useEffect(() => {
     if (isAuthenticated && mounted) {
+      const loadData = () => {
+        const stored = localStorage.getItem('vault_messages');
+        const raw = stored ? JSON.parse(stored) : [];
+        setMessages(raw.sort((a: any, b: any) => b.id - a.id));
+      };
       loadData();
       const interval = setInterval(loadData, 3000); 
       return () => clearInterval(interval);
     }
   }, [isAuthenticated, mounted]);
-
-  const loadData = () => {
-    if (typeof window === 'undefined') return;
-    try {
-      const stored = localStorage.getItem('vault_messages');
-      const raw = stored ? JSON.parse(stored) : [];
-      setMessages(raw.sort((a: any, b: any) => b.id - a.id));
-    } catch (e) {
-      console.error("Vault Error:", e);
-    }
-  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,34 +51,27 @@ const PrivateArea: React.FC = () => {
     }
   };
 
-  const handleSendResponse = async (e: React.FormEvent) => {
+  const handleSendResponse = (e: React.FormEvent) => {
     e.preventDefault();
     if (!replyTo || !responseContent.trim()) return;
 
-    setIsSendingResponse(true);
-    try {
-      const newMessage: VaultMessage = {
-        id: Date.now(),
-        sender: 'fabio.la.farina@outlook.it',
-        senderName: 'Fabio (Admin)',
-        recipient: replyTo.sender,
-        content: responseContent,
-        service: `Risposta a: ${replyTo.service}`,
-        attachments: [],
-        date: new Date().toLocaleString('it-IT'),
-        isReply: true
-      };
+    const newMessage: VaultMessage = {
+      id: Date.now(),
+      sender: 'fabio.la.farina@outlook.it',
+      senderName: 'Fabio (Admin)',
+      recipient: replyTo.sender,
+      content: responseContent,
+      service: `Risposta a: ${replyTo.service}`,
+      date: new Date().toLocaleString('it-IT'),
+      isReply: true
+    };
 
-      const existing = JSON.parse(localStorage.getItem('vault_messages') || '[]');
-      localStorage.setItem('vault_messages', JSON.stringify([newMessage, ...existing]));
+    const existing = JSON.parse(localStorage.getItem('vault_messages') || '[]');
+    localStorage.setItem('vault_messages', JSON.stringify([newMessage, ...existing]));
 
-      setResponseContent('');
-      setReplyTo(null);
-      loadData();
-      alert("Risposta inviata!");
-    } finally {
-      setIsSendingResponse(false);
-    }
+    setResponseContent('');
+    setReplyTo(null);
+    alert("Risposta inviata!");
   };
 
   if (!mounted) return null;
@@ -119,7 +96,7 @@ const PrivateArea: React.FC = () => {
 
   return (
     <section id="vault" className="py-24 bg-brand-dark text-white">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6 text-left">
         <div className="flex justify-between items-center mb-12 border-b border-white/10 pb-8">
           <h2 className="text-3xl font-black uppercase tracking-tighter">Admin Console</h2>
           <button onClick={() => setIsAuthenticated(false)} className="px-4 py-2 border border-white/20 text-[10px] font-black uppercase hover:bg-white hover:text-brand-dark transition-all">Logout</button>
@@ -132,7 +109,7 @@ const PrivateArea: React.FC = () => {
               <form onSubmit={handleSendResponse} className="space-y-4">
                 <textarea rows={4} value={responseContent} onChange={e => setResponseContent(e.target.value)} className="w-full p-4 border border-brand-dark/10 outline-none text-sm focus:border-brand-accent transition-all" placeholder="Risposta ufficiale..."></textarea>
                 <div className="flex gap-2">
-                  <button type="submit" className="flex-1 py-3 bg-brand-accent text-white font-black uppercase text-[10px]">{isSendingResponse ? 'Invio...' : 'Invia Risposta'}</button>
+                  <button type="submit" className="flex-1 py-3 bg-brand-accent text-white font-black uppercase text-[10px]">Invia Risposta</button>
                   <button type="button" onClick={() => setReplyTo(null)} className="px-6 py-3 border border-brand-dark/10 font-black uppercase text-[10px]">Annulla</button>
                 </div>
               </form>
@@ -158,7 +135,7 @@ const PrivateArea: React.FC = () => {
                     if (confirm('Eliminare?')) {
                       const updated = messages.filter(m => m.id !== msg.id);
                       localStorage.setItem('vault_messages', JSON.stringify(updated));
-                      loadData();
+                      setMessages(updated);
                     }
                   }} className="flex-1 md:w-full py-2 border border-white/10 text-[9px] font-black uppercase hover:bg-brand-accent hover:border-brand-accent transition-all">Elimina</button>
                 </div>

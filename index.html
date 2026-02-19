@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="it" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Farina Fabio | Portfolio & Vault</title>
+    <title>La Farina Fabio | Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,6 +31,10 @@
         }
     </script>
     <style>
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+
         :root {
             --brand-dark: #0f1715;
             --brand-light: #e0ede4;
@@ -41,9 +44,12 @@
         body {
             background-color: var(--brand-light);
             color: var(--brand-dark);
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
+        }
+
+        .glass {
+            background: rgba(224, 237, 228, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
 
         .bg-grid {
@@ -61,24 +67,7 @@
             0% { top: 0; }
             100% { top: 100%; }
         }
-
-        .animate-scan {
-            animation: scan 3s linear infinite;
-        }
-
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--brand-light);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--brand-accent);
-        }
+        .animate-scan { animation: scan 3s linear infinite; }
     </style>
 <script type="importmap">
 {
@@ -90,7 +79,7 @@
 }
 </script>
 </head>
-<body class="selection:bg-brand-accent selection:text-white">
+<body class="selection:bg-brand-accent selection:text-white overflow-x-hidden">
     <div id="root"></div>
     <script type="module" src="index.tsx"></script>
 </body>
