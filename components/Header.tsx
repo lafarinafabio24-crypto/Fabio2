@@ -1,4 +1,6 @@
 
+'use client';
+
 import React, { useState, useEffect } from 'react';
 
 const Header: React.FC = () => {
@@ -19,7 +21,6 @@ const Header: React.FC = () => {
           La Farina <span className="group-hover:text-brand-accent transition-colors">Fabio</span>
         </a>
         
-        {/* Navigazione rimossa come richiesto */}
         <div className="flex items-center gap-4">
           <div className="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></div>
           <span className="text-[10px] font-black uppercase tracking-widest text-brand-dark/40">Portfolio Online</span>

@@ -11,10 +11,9 @@ import PrivateArea from './components/Admin/PrivateArea';
 
 const App: React.FC = () => {
   return (
-    <div className="min-h-screen bg-brand-light text-brand-dark font-sans selection:bg-brand-accent selection:text-white">
+    <div className="min-h-screen flex flex-col font-sans">
       <Header />
-      
-      <main>
+      <main className="flex-grow">
         <Hero />
         <Interests />
         <About />
@@ -22,7 +21,6 @@ const App: React.FC = () => {
         <Contact />
         <PrivateArea />
       </main>
-
       <Footer />
     </div>
   );
