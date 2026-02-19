@@ -10,7 +10,7 @@ import Contact from './components/Sections/Contact';
 import PrivateArea from './components/Admin/PrivateArea';
 
 const App = () => (
-  <div className="flex flex-col min-h-screen">
+  <div className="flex flex-col min-h-screen bg-[#e0ede4]">
     <Header />
     <main>
       <Hero />

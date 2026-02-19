@@ -1,3 +1,4 @@
+'use client';
 
 import React from 'react';
 
@@ -64,37 +65,37 @@ const About: React.FC = () => {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-dark via-brand-dark/60 to-brand-dark/20">FORMAZIONE</span>
               </h2>
 
-              <p className="text-2xl md:text-3xl text-brand-dark font-light leading-snug mb-16 border-l-4 border-brand-accent/50 pl-8 italic">
+              <p className="text-2xl md:text-3xl text-brand-dark font-light leading-snug mb-16 border-l-4 border-brand-accent/50 pl-8 italic text-left">
                 "Il mio background non è costruito su carta patinata, ma su turni in fabbrica e studio costante. Un mix di pragmatismo operaio e visione digitale."
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 {/* Manual Experience */}
-                <div className="relative p-8 bg-white/40 border border-brand-dark/5 backdrop-blur-sm group hover:border-brand-accent/30 transition-colors">
+                <div className="relative p-8 bg-white/40 border border-brand-dark/5 backdrop-blur-sm group hover:border-brand-accent/30 transition-colors text-left">
                   <div className="flex items-center gap-3 mb-6">
                     <span className="text-2xl">🛠️</span>
                     <h3 className="text-xl font-black uppercase tracking-tighter text-brand-dark">Esperienza sul Campo</h3>
                   </div>
                   <h4 className="text-brand-accent font-bold uppercase text-[10px] tracking-[0.2em] mb-4">Lavoro Operativo</h4>
                   <p className="text-sm text-brand-dark/60 leading-relaxed font-light">
-                    Dalle linee di produzione in fabbrica alle consegne come fattorino. Esperienze concrete che mi hanno insegnato la disciplina, la gestione della fatica e la capacità di risolvere problemi in tempo reale. Non temo il lavoro sporco o i ritmi serrati: lì si impara la vera adattabilità.
+                    Dalle linee di produzione in fabbrica alle consegne come fattorino. Esperienze concrete che mi hanno insegnato la disciplina, la gestione della fatica e la capacità di risolvere problemi in tempo reale.
                   </p>
                 </div>
 
                 {/* Digital Evolution */}
-                <div className="relative p-8 bg-brand-dark border border-brand-dark text-white group hover:shadow-2xl transition-all">
+                <div className="relative p-8 bg-brand-dark border border-brand-dark text-white group hover:shadow-2xl transition-all text-left">
                   <div className="flex items-center gap-3 mb-6">
                     <span className="text-2xl">🧠</span>
                     <h3 className="text-xl font-black uppercase tracking-tighter">Evoluzione Digitale</h3>
                   </div>
                   <h4 className="text-brand-accent font-bold uppercase text-[10px] tracking-[0.2em] mb-4">AI & Social Media</h4>
                   <p className="text-sm text-white/60 leading-relaxed font-light">
-                    Formazione dedicata all'Intelligenza Artificiale e al Social Media Management. Studio come integrare le nuove tecnologie nei processi di comunicazione per ottimizzare i risultati. È il ponte tra la concretezza del lavoro manuale e le potenzialità del digitale.
+                    Formazione dedicata all'Intelligenza Artificiale e al Social Media Management. Studio come integrare le nuove tecnologie nei processi di comunicazione per ottimizzare i risultati.
                   </p>
                 </div>
               </div>
 
-              {/* Decorative timeline or status bar */}
+              {/* Decorative timeline */}
               <div className="mt-20 p-6 border-y border-brand-dark/5 flex flex-wrap gap-8 items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-brand-accent animate-pulse"></div>
@@ -113,13 +114,6 @@ const About: React.FC = () => {
           </div>
         </div>
       </div>
-      
-      <style>{`
-        @keyframes scan {
-          0% { top: 0; }
-          100% { top: 100%; }
-        }
-      `}</style>
     </section>
   );
 };

@@ -1,4 +1,3 @@
-
 import { Interest, NavItem } from '../types';
 
 export const NAV_ITEMS: NavItem[] = [
@@ -16,14 +15,6 @@ export const INTERESTS: Interest[] = [
     image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?q=80&w=1000&auto=format&fit=crop',
     description: 'Il ritmo del parquet e la precisione tecnica. Per me il basket non è solo uno sport, è una filosofia di costanza e visione di gioco.',
     color: 'border-orange-400'
-  },
-  {
-    id: 'calcio',
-    title: 'Calcio',
-    subtitle: 'Strategia & Squadra',
-    image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1000&auto=format&fit=crop',
-    description: 'Dalla tattica pura alla foga competitiva. Il calcio rappresenta l\'essenza del gioco di squadra e la capacità di adattarsi a ogni scenario.',
-    color: 'border-teal-400'
   },
   {
     id: 'anime',
