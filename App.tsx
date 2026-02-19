@@ -11,7 +11,7 @@ import PrivateArea from './components/Admin/PrivateArea';
 
 const App: React.FC = () => {
   return (
-    <div className="min-h-screen flex flex-col font-sans">
+    <div className="min-h-screen flex flex-col font-sans bg-[#e0ede4]">
       <Header />
       <main className="flex-grow">
         <Hero />

@@ -4,6 +4,7 @@ module.exports = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./*.{js,ts,jsx,tsx,mdx}"
   ],
   theme: {
     extend: {
@@ -24,10 +25,6 @@ module.exports = {
       backgroundImage: {
         'dots': 'radial-gradient(circle, rgba(15, 23, 21, 0.1) 1px, transparent 1px)',
         'grid': 'linear-gradient(to right, rgba(15, 23, 21, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(15, 23, 21, 0.04) 1px, transparent 1px)',
-      },
-      backgroundSize: {
-        'dots-size': '24px 24px',
-        'grid-size': '60px 60px',
       }
     },
   },
