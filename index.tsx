@@ -1,38 +1,16 @@
 
 import React from 'react';
-import { createRoot } from 'react-dom/client';
-import Hero from './components/Sections/Hero';
-import Interests from './components/Sections/Interests';
-import About from './components/Sections/About';
-import ClientPortal from './components/Sections/ClientPortal';
-import Contact from './components/Sections/Contact';
-import PrivateArea from './components/Admin/PrivateArea';
-import Header from './components/Header';
-import Footer from './components/Footer';
+import ReactDOM from 'react-dom/client';
+import App from './App';
 
-const App = () => {
-  return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-grow">
-        <Hero />
-        <Interests />
-        <About />
-        <ClientPortal />
-        <Contact />
-        <PrivateArea />
-      </main>
-      <Footer />
-    </div>
-  );
-};
-
-const container = document.getElementById('root');
-if (container) {
-  const root = createRoot(container);
-  root.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  );
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  throw new Error("Could not find root element to mount to");
 }
+
+const root = ReactDOM.createRoot(rootElement);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
